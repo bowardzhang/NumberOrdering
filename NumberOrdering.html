@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ordering Units Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+    .language-switcher {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 14px;
+    }
+    .container {
+      margin: 20px auto;
+      max-width: 800px;
+    }
+    .number-box {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 5px;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #f9f9f9;
+    }
+    .number-box.selected {
+      background-color: #d1e7dd;
+      border-color: #155724;
+    }
+    .feedback {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .feedback.correct {
+      color: green;
+    }
+    .feedback.incorrect {
+      color: red;
+    }
+    button {
+      padding: 10px 20px;
+      margin-top: 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #next-btn {
+      display: none; /* Initially hidden */
+    }
+  </style>
+</head>
+<body>
+  <!-- Language Switcher -->
+  <div class="language-switcher">
+    <button id="lang-en">English</button>
+    <button id="lang-de">Deutsch</button>
+  </div>
+
+  <h1 id="title">Order the Numbers!</h1>
+  <p id="instructions">Click the numbers below to order them from smallest to largest.</p>
+  <div class="container" id="game-container">
+    <!-- Number boxes will be dynamically generated here -->
+  </div>
+  <button id="submit-btn">Submit</button>
+  <button id="next-btn">Next</button>
+  <div class="feedback" id="feedback"></div>
+
+  <script>
+    // Language strings
+    const translations = {
+      en: {
+        title: "Order the Numbers!",
+        instructions: "Click the numbers below to order them from smallest to largest.",
+        submit: "Submit",
+        next: "Next",
+        correct: "Correct! Well done!",
+        incorrect: "Incorrect! The correct order is:",
+        selectAll: "Please select all 6 numbers!"
+      },
+      de: {
+        title: "Ordne die Zahlen!",
+        instructions: "Klicke auf die Zahlen, um sie von der kleinsten zur größten zu ordnen.",
+        submit: "Absenden",
+        next: "Weiter",
+        correct: "Richtig! Gut gemacht!",
+        incorrect: "Falsch! Die richtige Reihenfolge ist:",
+        selectAll: "Bitte wähle alle 6 Zahlen aus!"
+      }
+    };
+
+    let currentLanguage = "en"; // Default language
+
+    // Function to update the UI based on the selected language
+    function updateLanguage() {
+      document.getElementById("title").textContent = translations[currentLanguage].title;
+      document.getElementById("instructions").textContent = translations[currentLanguage].instructions;
+      document.getElementById("submit-btn").textContent = translations[currentLanguage].submit;
+      document.getElementById("next-btn").textContent = translations[currentLanguage].next;
+
+      // Update feedback if visible
+      const feedback = document.getElementById("feedback");
+      if (feedback.textContent.includes("Correct!") || feedback.textContent.includes("Richtig!")) {
+        feedback.textContent = translations[currentLanguage].correct;
+      } else if (feedback.textContent.includes("Incorrect!") || feedback.textContent.includes("Falsch!")) {
+        feedback.textContent = translations[currentLanguage].incorrect;
+      }
+    }
+
+    // Event listeners for language buttons
+    document.getElementById("lang-en").addEventListener("click", () => {
+      currentLanguage = "en";
+      updateLanguage();
+    });
+
+    document.getElementById("lang-de").addEventListener("click", () => {
+      currentLanguage = "de";
+      updateLanguage();
+    });
+
+    let numbers = [];
+    let selectedOrder = [];
+    let correctOrder = [];
+
+    // Function to generate random numbers with units
+    function generateNumbers() {
+      numbers = [];
+      const fractionalForms = [
+        { value: 0.25, display: '1/4' },
+        { value: 0.375, display: '3/8' },
+        { value: 0.5, display: '1/2' },
+        { value: 0.625, display: '5/8' },
+        { value: 0.75, display: '3/4' }
+      ];
+
+      // Generate 2 or 3 fractional numbers
+      const numFractions = Math.floor(Math.random() * 2) + 2; // 2 or 3 fractions
+      for (let i = 0; i < numFractions; i++) {
+        const randomIndex = Math.floor(Math.random() * fractionalForms.length);
+        const fraction = fractionalForms[randomIndex];
+        numbers.push({ value: fraction.value, display: `${fraction.display} Liter`, unit: 'Liter' });
+        fractionalForms.splice(randomIndex, 1); // Remove used fraction to avoid duplicates
+      }
+
+      // Generate 2 milliliter numbers
+      for (let i = 0; i < 2; i++) {
+        const value = Math.random().toFixed(3); // Random number between 0 and 1 with 3 decimals
+        numbers.push({ value: parseFloat(value), display: `${Math.round(value * 1000)} Milliliter`, unit: 'Milliliter' });
+      }
+
+      // Generate remaining numbers as liters
+      while (numbers.length < 6) {
+        const value = Math.random().toFixed(3); // Random number between 0 and 1 with 3 decimals
+        numbers.push({ value: parseFloat(value), display: `${value} Liter`, unit: 'Liter' });
+      }
+
+      // Shuffle the numbers array
+      numbers = numbers.sort(() => Math.random() - 0.5);
+
+      // Convert all to milliliters for comparison
+      correctOrder = [...numbers].map(num => 
+        num.unit === 'Liter' ? num.value * 1000 : parseFloat(num.display)
+      );
+
+      // Sort the numbers based on their milliliter values
+      correctOrder = correctOrder.map((val, index) => numbers[index])
+        .sort((a, b) => {
+          const aVal = a.unit === 'Liter' ? a.value * 1000 : parseFloat(a.display);
+          const bVal = b.unit === 'Liter' ? b.value * 1000 : parseFloat(b.display);
+          return aVal - bVal;
+        });
+
+      renderNumbers();
+    }
+
+    // Function to render the numbers on the page
+    function renderNumbers() {
+      const container = document.getElementById('game-container');
+      container.innerHTML = ''; // Clear previous numbers
+
+      numbers.forEach((num, index) => {
+        const box = document.createElement('div');
+        box.className = 'number-box';
+        box.textContent = num.display;
+        box.dataset.index = index;
+
+        box.addEventListener('click', () => {
+          if (!box.classList.contains('selected')) {
+            box.classList.add('selected');
+            selectedOrder.push(numbers[index]);
+          } else {
+            box.classList.remove('selected');
+            selectedOrder = selectedOrder.filter(item => item !== numbers[index]);
+          }
+        });
+
+        container.appendChild(box);
+      });
+    }
+
+    // Function to check the user's answer
+    function checkAnswer() {
+      const feedback = document.getElementById('feedback');
+      feedback.textContent = '';
+      feedback.className = 'feedback';
+
+      if (selectedOrder.length !== 6) {
+        feedback.textContent = translations[currentLanguage].selectAll;
+        return;
+      }
+
+      const isCorrect = selectedOrder.every((num, index) => 
+        num.value === correctOrder[index].value && num.unit === correctOrder[index].unit
+      );
+
+      if (isCorrect) {
+        feedback.textContent = translations[currentLanguage].correct;
+        feedback.classList.add('correct');
+      } else {
+        feedback.textContent = translations[currentLanguage].incorrect;
+
+        const correctList = document.createElement('div');
+        correctOrder.forEach(num => {
+          const item = document.createElement('span');
+          item.textContent = `${num.display}, `;
+          correctList.appendChild(item);
+        });
+        feedback.appendChild(correctList);
+      }
+
+      // Show the "Next" button and hide the "Submit" button
+      document.getElementById('submit-btn').style.display = 'none';
+      document.getElementById('next-btn').style.display = 'inline-block';
+    }
+
+    // Event listener for the submit button
+    document.getElementById('submit-btn').addEventListener('click', checkAnswer);
+
+    // Event listener for the "Next" button
+    document.getElementById('next-btn').addEventListener('click', () => {
+      // Reset the game state
+      selectedOrder = [];
+      generateNumbers();
+
+      // Clear selections and feedback
+      document.querySelectorAll('.number-box').forEach(box => box.classList.remove('selected'));
+      document.getElementById('feedback').textContent = '';
+
+      // Show the "Submit" button and hide the "Next" button
+      document.getElementById('submit-btn').style.display = 'inline-block';
+      document.getElementById('next-btn').style.display = 'none';
+    });
+
+    // Initialize the game
+    generateNumbers();
+  </script>
+</body>
+</html>
