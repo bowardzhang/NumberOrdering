@@ -223,6 +223,7 @@
         feedback.classList.add('correct');
       } else {
         feedback.textContent = translations[currentLanguage].incorrect;
+        feedback.classList.add('incorrect');
 
         const correctList = document.createElement('div');
         correctOrder.forEach(num => {
