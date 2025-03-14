@@ -71,7 +71,7 @@
   <button id="next-btn">Next</button>
   <div class="feedback" id="feedback"></div>
   <br><br>
-  <div class="footnote" id="footnote"></div>
+  <p id="footnote">❤️ For Linya and Luca ❤️ <br><br> March 2025</p>
 
   <script>
     // Language strings
@@ -84,7 +84,7 @@
         correct: "Correct! Well done!",
         incorrect: "Incorrect! The correct order is:",
         selectAll: "Please select all 6 numbers!",
-        footnote: "❤️ For Linya and Luca ❤️ March 2025"
+        footnote: "❤️ For Linya and Luca ❤️ \n\n March 2025"
       },
       de: {
         title: "Ordne die Zahlen!",
@@ -94,7 +94,7 @@
         correct: "Richtig! Gut gemacht!",
         incorrect: "Falsch! Die richtige Reihenfolge ist:",
         selectAll: "Bitte wähle alle 6 Zahlen aus!",
-        footnote: "❤️ Für Linya und Luca ❤️ März 2025"
+        footnote: "❤️ Für Linya und Luca ❤️ \n\n März 2025"
       }
     };
 
@@ -103,10 +103,10 @@
     // Function to update the UI based on the selected language
     function updateLanguage() {
       document.getElementById("title").textContent = translations[currentLanguage].title;
-      document.getElementById("").textContent = translations[currentLanguage].instructions;
+      document.getElementById("instructions").textContent = translations[currentLanguage].instructions;
       document.getElementById("submit-btn").textContent = translations[currentLanguage].submit;
       document.getElementById("next-btn").textContent = translations[currentLanguage].next;
-      document.getElementById("footnote").textContent = translations[currentLanguage].footnote;
+      document.getElementById("footnote").innerText = translations[currentLanguage].footnote;
 
       // Update feedback if visible
       const feedback = document.getElementById("feedback");
@@ -136,11 +136,13 @@
     function generateNumbers() {
       numbers = [];
       const fractionalForms = [
+        { value: 0.125, display: '1/8' },
         { value: 0.25, display: '1/4' },
         { value: 0.375, display: '3/8' },
         { value: 0.5, display: '1/2' },
         { value: 0.625, display: '5/8' },
-        { value: 0.75, display: '3/4' }
+        { value: 0.75, display: '3/4' },
+        { value: 0.875, display: '7/8' },
       ];
 
       // Generate 2 or 3 fractional numbers
