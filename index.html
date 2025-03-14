@@ -70,6 +70,8 @@
   <button id="submit-btn">Submit</button>
   <button id="next-btn">Next</button>
   <div class="feedback" id="feedback"></div>
+  <br><br>
+  <p id="footnote">❤️ For Linya and Luca ❤️ <br><br> March 2025</p>
 
   <script>
     // Language strings
@@ -81,7 +83,8 @@
         next: "Next",
         correct: "Correct! Well done!",
         incorrect: "Incorrect! The correct order is:",
-        selectAll: "Please select all 6 numbers!"
+        selectAll: "Please select all 6 numbers!",
+        footnote: "❤️ For Linya and Luca ❤️ \n\n March 2025"
       },
       de: {
         title: "Ordne die Zahlen!",
@@ -90,7 +93,8 @@
         next: "Weiter",
         correct: "Richtig! Gut gemacht!",
         incorrect: "Falsch! Die richtige Reihenfolge ist:",
-        selectAll: "Bitte wähle alle 6 Zahlen aus!"
+        selectAll: "Bitte wähle alle 6 Zahlen aus!",
+        footnote: "❤️ Für Linya und Luca ❤️ \n\n März 2025"
       }
     };
 
@@ -102,6 +106,7 @@
       document.getElementById("instructions").textContent = translations[currentLanguage].instructions;
       document.getElementById("submit-btn").textContent = translations[currentLanguage].submit;
       document.getElementById("next-btn").textContent = translations[currentLanguage].next;
+      document.getElementById("footnote").innerText = translations[currentLanguage].footnote;
 
       // Update feedback if visible
       const feedback = document.getElementById("feedback");
@@ -131,11 +136,13 @@
     function generateNumbers() {
       numbers = [];
       const fractionalForms = [
+        { value: 0.125, display: '1/8' },
         { value: 0.25, display: '1/4' },
         { value: 0.375, display: '3/8' },
         { value: 0.5, display: '1/2' },
         { value: 0.625, display: '5/8' },
-        { value: 0.75, display: '3/4' }
+        { value: 0.75, display: '3/4' },
+        { value: 0.875, display: '7/8' },
       ];
 
       // Generate 2 or 3 fractional numbers
