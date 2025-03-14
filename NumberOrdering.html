@@ -70,6 +70,8 @@
   <button id="submit-btn">Submit</button>
   <button id="next-btn">Next</button>
   <div class="feedback" id="feedback"></div>
+  <br><br>
+  <div class="footnote" id="footnote"></div>
 
   <script>
     // Language strings
@@ -81,7 +83,8 @@
         next: "Next",
         correct: "Correct! Well done!",
         incorrect: "Incorrect! The correct order is:",
-        selectAll: "Please select all 6 numbers!"
+        selectAll: "Please select all 6 numbers!",
+        footnote: "❤️ For Linya and Luca ❤️ March 2025"
       },
       de: {
         title: "Ordne die Zahlen!",
@@ -90,7 +93,8 @@
         next: "Weiter",
         correct: "Richtig! Gut gemacht!",
         incorrect: "Falsch! Die richtige Reihenfolge ist:",
-        selectAll: "Bitte wähle alle 6 Zahlen aus!"
+        selectAll: "Bitte wähle alle 6 Zahlen aus!",
+        footnote: "❤️ Für Linya und Luca ❤️ März 2025"
       }
     };
 
@@ -99,9 +103,10 @@
     // Function to update the UI based on the selected language
     function updateLanguage() {
       document.getElementById("title").textContent = translations[currentLanguage].title;
-      document.getElementById("instructions").textContent = translations[currentLanguage].instructions;
+      document.getElementById("").textContent = translations[currentLanguage].instructions;
       document.getElementById("submit-btn").textContent = translations[currentLanguage].submit;
       document.getElementById("next-btn").textContent = translations[currentLanguage].next;
+      document.getElementById("footnote").textContent = translations[currentLanguage].footnote;
 
       // Update feedback if visible
       const feedback = document.getElementById("feedback");
